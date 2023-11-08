@@ -3,7 +3,9 @@
 import { Button, Heading } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import { useEffect } from "react";
+import DAO from "./DAO";
 import NavBar from "./NavBar";
+
 import useConnectStore from "./store";
 
 const Home = () => {
@@ -12,7 +14,7 @@ const Home = () => {
   const account = useSelectedAccount(connector);
 
   const connectStatus = useConnectStore((s) => s.connectStatus);
-  const setConnectStatus = useConnectStore((s) => s.setConnectStatus);
+  const { setConnectStatus } = useConnectStore();
 
   useEffect(() => {
     if (connectStatus === "Connecting") {
@@ -27,12 +29,12 @@ const Home = () => {
       setConnectStatus("Connected");
     } catch (error) {
       setConnectStatus("Not Connected");
-      console.log("Failed to connect to wallet or User rejected", error);
+      console.log("Failed to connect to wallet or User rejected. ", error);
     }
   };
 
   return (
-    <div className="text-center space-y-8">
+    <div className="text-center space-y-9">
       <NavBar account={account} />
 
       <Heading as="h6" size="lg">
@@ -50,6 +52,7 @@ const Home = () => {
           Connect To Wallet
         </Button>
       )}
+      {account && <DAO account={account} />}
     </div>
   );
 };

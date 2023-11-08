@@ -39,7 +39,7 @@
     "@web3-react/metamask": "^8.2.4",
     "eventemitter3": "^5.0.1",
     "framer-motion": "^10.16.4",
-    "react-hook-form": "^7.47.0",
+    "react-hook-form": "^7.48.2",
     "zustand": "^4.3.7"
   }
 }
