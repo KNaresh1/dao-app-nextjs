@@ -1,5 +1,6 @@
 import {
   Button,
+  Center,
   FormControl,
   Input,
   NumberDecrementStepper,
@@ -7,6 +8,7 @@ import {
   NumberInput,
   NumberInputField,
   NumberInputStepper,
+  Stack,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
 import { Contract } from "ethers";
@@ -23,6 +25,7 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
   const {
     handleSubmit,
     register,
+    reset,
     formState: { isSubmitting },
   } = useForm<CreateProposalForm>();
 
@@ -37,6 +40,8 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
         .createProposal(name, formattedAmount, recipient);
       await transaction.wait();
 
+      reset();
+
       setConnectStatus("Connecting");
     } catch (error) {
       console.log("Error while creating proposal. ", error);
@@ -44,42 +49,45 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
   });
 
   return (
-    <form
-      className="flex flex-col w-1/2 justify-center items-center space-y-4"
-      onSubmit={onSubmit}
-    >
-      <FormControl isRequired>
-        <Input
-          id="name"
-          placeholder="Enter Proposal Name"
-          {...register("name")}
-        />
-      </FormControl>
-      <FormControl isRequired>
-        <NumberInput>
-          <NumberInputField id="amount" {...register("amount")} />
-          <NumberInputStepper>
-            <NumberIncrementStepper />
-            <NumberDecrementStepper />
-          </NumberInputStepper>
-        </NumberInput>
-      </FormControl>
-      <FormControl isRequired>
-        <Input
-          id="recipient"
-          placeholder="Enter Recipient Address"
-          {...register("recipient")}
-        />
-      </FormControl>
-      <Button
-        mt={5}
-        colorScheme="blue"
-        variant="outline"
-        isLoading={isSubmitting}
-        type="submit"
-      >
-        Create Proposal
-      </Button>
+    <form onSubmit={onSubmit}>
+      <Center>
+        <Stack gap={3} w={"lg"} justify="center">
+          <FormControl isRequired>
+            <Input
+              id="name"
+              placeholder="Enter Proposal Name"
+              {...register("name")}
+            />
+          </FormControl>
+          <FormControl isRequired>
+            <NumberInput>
+              <NumberInputField id="amount" {...register("amount")} />
+              <NumberInputStepper>
+                <NumberIncrementStepper />
+                <NumberDecrementStepper />
+              </NumberInputStepper>
+            </NumberInput>
+          </FormControl>
+          <FormControl isRequired>
+            <Input
+              id="recipient"
+              placeholder="Enter Recipient Address"
+              {...register("recipient")}
+            />
+          </FormControl>
+          <Button
+            mt={2}
+            mb={2}
+            width="lg"
+            colorScheme="blue"
+            variant="outline"
+            isLoading={isSubmitting}
+            type="submit"
+          >
+            Create Proposal
+          </Button>
+        </Stack>
+      </Center>
     </form>
   );
 };

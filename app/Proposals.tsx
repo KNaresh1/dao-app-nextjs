@@ -1,8 +1,9 @@
 import {
+  Box,
   Button,
+  Center,
   Table,
   TableCaption,
-  TableContainer,
   Tbody,
   Td,
   Th,
@@ -55,9 +56,17 @@ const Proposals = ({
   };
 
   return (
-    <div className="py-8">
-      <TableContainer>
-        <Table variant="striped" colorScheme="grey" size="sm">
+    <Center>
+      <Box
+        maxWidth="100%"
+        overflowY="auto"
+        borderLeft="1px"
+        borderRight="1px"
+        borderTop="1px"
+        borderBottom="1px"
+        borderColor="teal"
+      >
+        <Table variant="striped" size="sm">
           <TableCaption>Proposals</TableCaption>
           <Thead>
             <Tr>
@@ -113,8 +122,8 @@ const Proposals = ({
             })}
           </Tbody>
         </Table>
-      </TableContainer>
-    </div>
+      </Box>
+    </Center>
   );
 };
 

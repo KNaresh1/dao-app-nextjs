@@ -1,7 +1,7 @@
 ## Decentralized Autonomous Organization (D.A.O) blockchain app
 - Members of D.A.O can create a proposal, vote and finalize the proposal once the vote % satisfies the weighted vote condition
 - Smart Contracts - Token.sol and DAO.sol using Solidity
--  FrontEnd - NextJS
+-  FrontEnd - NextJS, web3React, ChakraUI
 
 
 ### Hardhat commands

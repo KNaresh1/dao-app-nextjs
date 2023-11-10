@@ -34,7 +34,7 @@ const Home = () => {
   };
 
   return (
-    <div className="text-center space-y-9">
+    <div className="text-center space-y-6">
       <NavBar account={account} />
 
       <Heading as="h6" size="lg">
