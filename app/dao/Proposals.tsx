@@ -10,41 +10,29 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import { useEffect, useState } from "react";
 import useContractStore from "../store";
-import { Proposal, formatUnits, shortenAccount } from "../utils";
+import {
+  formatUnits,
+  loadBalance,
+  loadProposals,
+  shortenAccount,
+} from "../utils";
 
 const Proposals = () => {
   const { provider } = useWeb3React();
-  const [proposals, setProposals] = useState<Proposal[]>([]);
-  const [quorum, setQuorum] = useState<number>(0);
 
-  const dao = useContractStore((s) => s.dao);
-
-  useEffect(() => {
-    if (dao) {
-      loadProposals();
-    }
-  }, [dao]);
-
-  const loadProposals = async () => {
-    const noOfProposals = await dao.proposalCount();
-    const proposals = [];
-
-    for (var i = 0; i < noOfProposals; i++) {
-      const proposal = await dao.proposals(i + 1);
-      proposals.push(proposal);
-    }
-    setProposals(proposals);
-    setQuorum(await dao.quorum());
-  };
+  const [dao, quorum, proposals, addProposals, addBalance] = useContractStore(
+    (s) => [s.dao, s.quorum, s.proposals, s.addProposals, s.addBalance]
+  );
 
   const voteProposal = async (id: number) => {
     try {
       const signer = await provider?.getSigner();
 
-      const transaction = await dao?.connect(signer || "0x0").vote(id);
+      const transaction = await dao.connect(signer || "0x0").vote(id);
       await transaction.wait();
+
+      loadProposals(dao, addProposals);
     } catch (error) {
       console.log(`User rejected or transaction reverted.  ${error}`);
     }
@@ -57,6 +45,9 @@ const Proposals = () => {
         ?.connect(signer || "0x0")
         .finalizeProposal(id);
       await transaction.wait();
+
+      loadProposals(dao, addProposals);
+      loadBalance(provider, dao, addBalance);
     } catch (error) {
       console.log(`User rejected or transaction reverted. ${error}`);
     }

@@ -1,7 +1,10 @@
 ## Decentralized Autonomous Organization (D.A.O) blockchain app
-- Members of D.A.O can create a proposal, vote and finalize the proposal once the vote % satisfies the weighted vote condition
-- Smart Contracts - Token.sol and DAO.sol using Solidity
--  FrontEnd - NextJS, web3React, ChakraUI
+- Members of D.A.O can create a proposal, vote and finalize the proposal once the vote % satisfies the weighted vote condition, the proposal is finalized or approved.
+
+### End-to-End technology stack
+1. FrontEnd: NextJS (UI and user interactions), web3-react (interact with smart contract deployed in blockchain), zustand (state management), ChakraUI (css styling)
+2. BackEnd: Solidity (Implement smart contracts), Hardhat (deploy, run and test), ethers
+
 
 
 ### Hardhat commands

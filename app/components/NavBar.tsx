@@ -17,9 +17,7 @@ const NavBar = () => {
   return (
     <Flex align="center" gap="3" p={3}>
       <Image src={logo} alt="Logo" style={{ width: "40px", height: "40px" }} />
-      <Text fontSize="lg" fontWeight="bold">
-        Decentralized DAO
-      </Text>
+      <Text fontSize="lg">Decentralized DAO</Text>
 
       <Spacer />
 
