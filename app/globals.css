@@ -1,7 +1,3 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 :root {
   --foreground-rgb: 0, 0, 0;
 }
@@ -14,5 +10,5 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  padding: 1rem 8rem;
+  padding: 2rem 8rem;
 }

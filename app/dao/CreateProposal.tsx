@@ -3,24 +3,20 @@ import {
   Center,
   FormControl,
   Input,
-  NumberDecrementStepper,
-  NumberIncrementStepper,
   NumberInput,
   NumberInputField,
-  NumberInputStepper,
   Stack,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import { Contract } from "ethers";
 import { useForm } from "react-hook-form";
-import { CreateProposalForm } from "./Types";
-import useConnectStore from "./store";
-import { parseUnits } from "./utils";
+import useContractStore from "../store";
+import { CreateProposalForm } from "../utils/types";
+import { parseUnits } from "../utils/utils";
 
-const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
+const CreateProposal = () => {
   const { provider } = useWeb3React();
 
-  const { setConnectStatus } = useConnectStore();
+  const dao = useContractStore((s) => s.dao);
 
   const {
     handleSubmit,
@@ -36,13 +32,11 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
     try {
       const signer = await provider?.getSigner();
       const transaction = await dao
-        ?.connect(signer || "0x0")
+        .connect(signer || "0x0")
         .createProposal(name, formattedAmount, recipient);
       await transaction.wait();
 
       reset();
-
-      setConnectStatus("Connecting");
     } catch (error) {
       console.log("Error while creating proposal. ", error);
     }
@@ -50,8 +44,8 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
 
   return (
     <form onSubmit={onSubmit}>
-      <Center>
-        <Stack gap={3} w={"lg"} justify="center">
+      <Center py={8}>
+        <Stack gap={4} w={"lg"}>
           <FormControl isRequired>
             <Input
               id="name"
@@ -62,10 +56,6 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
           <FormControl isRequired>
             <NumberInput>
               <NumberInputField id="amount" {...register("amount")} />
-              <NumberInputStepper>
-                <NumberIncrementStepper />
-                <NumberDecrementStepper />
-              </NumberInputStepper>
             </NumberInput>
           </FormControl>
           <FormControl isRequired>
@@ -80,7 +70,6 @@ const CreateProposal = ({ dao }: { dao: Contract | undefined }) => {
             mb={2}
             width="lg"
             colorScheme="blue"
-            variant="outline"
             isLoading={isSubmitting}
             type="submit"
           >

@@ -1,5 +1,5 @@
 const hre = require("hardhat");
-const config = require("../config.json");
+const config = require("../app/config.json");
 
 const tokens = (n) => {
   return hre.ethers.utils.parseUnits(n.toString(), "ether");
@@ -23,7 +23,7 @@ async function main() {
 
   const token = await hre.ethers.getContractAt(
     "Token",
-    config[chainId].token.address
+    config.chains[chainId].tokenAddress
   );
   console.log(`Token fetched: ${token.address} \n`);
 
@@ -42,7 +42,7 @@ async function main() {
 
   const dao = await hre.ethers.getContractAt(
     "DAO",
-    config[chainId].dao.address
+    config.chains[chainId].daoAddress
   );
 
   console.log(`DAO fetched: ${dao.address} \n`);

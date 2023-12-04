@@ -1,59 +1,25 @@
 "use client";
 
-import { Button, Heading } from "@chakra-ui/react";
+import { Box, Heading, Text } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import { useEffect } from "react";
-import DAO from "./DAO";
-import NavBar from "./NavBar";
-
-import useConnectStore from "./store";
+import useLoadContract from "./connect";
+import DAO from "./dao/DAO";
 
 const Home = () => {
-  const { connector, hooks } = useWeb3React();
-  const { useSelectedAccount } = hooks;
-  const account = useSelectedAccount(connector);
-
-  const connectStatus = useConnectStore((s) => s.connectStatus);
-  const { setConnectStatus } = useConnectStore();
-
-  useEffect(() => {
-    if (connectStatus === "Connecting") {
-      connectWallet();
-    }
-  }, [connectStatus]);
-
-  const connectWallet = async () => {
-    const chainId = "31337";
-    try {
-      await connector.activate(chainId);
-      setConnectStatus("Connected");
-    } catch (error) {
-      setConnectStatus("Not Connected");
-      console.log("Failed to connect to wallet or User rejected. ", error);
-    }
-  };
+  const { account } = useWeb3React();
+  useLoadContract();
 
   return (
-    <div className="text-center space-y-6">
-      <NavBar account={account} />
-
-      <Heading as="h6" size="lg">
-        Welcome to our DAO!
-      </Heading>
-
-      {(connectStatus !== "Connected" || !account) && (
-        <Button
-          isLoading={connectStatus === "Connecting"}
-          loadingText="Connecting"
-          variant="outline"
-          colorScheme="blue"
-          onClick={() => setConnectStatus("Connecting")}
-        >
-          Connect To Wallet
-        </Button>
+    <Box py={6} textAlign="center">
+      <Heading size="lg">Welcome to DAO!</Heading>
+      {account ? (
+        <DAO />
+      ) : (
+        <Text align="center" fontSize="lg" mt={3}>
+          Please connect to Wallet...
+        </Text>
       )}
-      {account && <DAO account={account} />}
-    </div>
+    </Box>
   );
 };
 

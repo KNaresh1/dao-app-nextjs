@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Table,
-  TableCaption,
   Tbody,
   Td,
   Th,
@@ -11,33 +10,43 @@ import {
   Tr,
 } from "@chakra-ui/react";
 import { useWeb3React } from "@web3-react/core";
-import { Contract } from "ethers";
-import { Proposal } from "./Types";
-import useConnectStore from "./store";
-import { formatUnits } from "./utils";
+import { useEffect, useState } from "react";
+import useContractStore from "../store";
+import { Proposal, formatUnits, shortenAccount } from "../utils";
 
-const Proposals = ({
-  dao,
-  proposals,
-  quorum,
-}: {
-  dao: Contract | undefined;
-  proposals: Proposal[];
-  quorum: number;
-}) => {
+const Proposals = () => {
   const { provider } = useWeb3React();
+  const [proposals, setProposals] = useState<Proposal[]>([]);
+  const [quorum, setQuorum] = useState<number>(0);
 
-  const { setConnectStatus } = useConnectStore();
+  const dao = useContractStore((s) => s.dao);
+
+  useEffect(() => {
+    if (dao) {
+      loadProposals();
+    }
+  }, [dao]);
+
+  const loadProposals = async () => {
+    const noOfProposals = await dao.proposalCount();
+    const proposals = [];
+
+    for (var i = 0; i < noOfProposals; i++) {
+      const proposal = await dao.proposals(i + 1);
+      proposals.push(proposal);
+    }
+    setProposals(proposals);
+    setQuorum(await dao.quorum());
+  };
 
   const voteProposal = async (id: number) => {
     try {
       const signer = await provider?.getSigner();
+
       const transaction = await dao?.connect(signer || "0x0").vote(id);
       await transaction.wait();
-
-      setConnectStatus("Connecting");
     } catch (error) {
-      console.log("User rejected or transaction reverted. Error: ", error);
+      console.log(`User rejected or transaction reverted.  ${error}`);
     }
   };
 
@@ -48,26 +57,15 @@ const Proposals = ({
         ?.connect(signer || "0x0")
         .finalizeProposal(id);
       await transaction.wait();
-
-      setConnectStatus("Connecting");
     } catch (error) {
-      console.log("User rejected or transaction reverted. Error: ", error);
+      console.log(`User rejected or transaction reverted. ${error}`);
     }
   };
 
   return (
-    <Center>
-      <Box
-        maxWidth="100%"
-        overflowY="auto"
-        borderLeft="1px"
-        borderRight="1px"
-        borderTop="1px"
-        borderBottom="1px"
-        borderColor="teal"
-      >
-        <Table variant="striped" size="sm">
-          <TableCaption>Proposals</TableCaption>
+    <Center py={8}>
+      <Box maxWidth="100%" overflowY="auto" border="1px" color="blue.600" p={3}>
+        <Table color="blue.600" variant="striped" size="sm">
           <Thead>
             <Tr>
               <Th>#</Th>
@@ -87,7 +85,7 @@ const Proposals = ({
                 <Tr key={index}>
                   <Td>{id.toString()}</Td>
                   <Td>{name}</Td>
-                  <Td>{recipient}</Td>
+                  <Td>{shortenAccount(recipient)}</Td>
                   <Td>{formatUnits(amount.toString())} ETH</Td>
                   <Td>{finalized ? "Approved" : "In Progress"}</Td>
                   <Td>{votes.toString()}</Td>
@@ -95,7 +93,6 @@ const Proposals = ({
                     {!finalized && (
                       <Button
                         colorScheme="blue"
-                        variant="outline"
                         size="xs"
                         width="100%"
                         onClick={() => voteProposal(id)}
@@ -108,7 +105,6 @@ const Proposals = ({
                     {!finalized && votes > quorum && (
                       <Button
                         colorScheme="blue"
-                        variant="outline"
                         size="xs"
                         width="100%"
                         onClick={() => finalizeProposal(id)}

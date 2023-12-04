@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import AppProvider from "./AppProvider";
+import { NavBar } from "./components";
 import "./globals.css";
+import AppProvider from "./providers/AppProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: "DAO App",
-  description: "Decentralized Autonomous Organization in next js",
+  description: "Decentralized Autonomous Organization",
 };
 
 export default function RootLayout({
@@ -19,6 +20,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <AppProvider>
+          <NavBar />
           <main>{children}</main>
         </AppProvider>
       </body>

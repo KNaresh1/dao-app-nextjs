@@ -4,9 +4,9 @@ import Web3Provider from "./Web3Provider";
 
 const AppProvider = ({ children }: { children: React.ReactNode }) => {
   return (
-    <Web3Provider>
-      <UIProvider>{children}</UIProvider>
-    </Web3Provider>
+    <UIProvider>
+      <Web3Provider>{children} </Web3Provider>
+    </UIProvider>
   );
 };
 
